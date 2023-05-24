@@ -137,6 +137,9 @@ func (rd *Reader) readHeader() (*Header, error) {
 			if idx := bytes.IndexByte(data, '\n'); idx != -1 {
 				data = data[:idx]
 			}
+			if idx := bytes.IndexByte(data, '/'); idx != -1 {
+				data = data[:idx]
+			}
 			header.Name = string(data)
 		}
 	}

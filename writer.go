@@ -121,6 +121,7 @@ func (aw *Writer) WriteGlobalHeaderForLongFiles(filenames []string) error {
 		if len(filename) >= 16 {
 			aw.longFilenames[filename] = len(data)
 			data = append(data, []byte(filename)...)
+			data = append(data, '/')
 			data = append(data, '\n')
 		}
 	}

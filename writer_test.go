@@ -127,6 +127,33 @@ func TestIoCopyWithoutPadding(t *testing.T) {
 	}
 }
 
+func TestWriteGNUFilename(t *testing.T) {
+	hdr := &Header{}
+	body := "test a file with a long filename\n"
+	hdr.ModTime = time.Unix(1542225207, 0)
+	hdr.Name = "test_long_filename.txt"
+	hdr.Size = int64(len(body))
+	hdr.Mode = 0644
+	hdr.Uid = 502
+	hdr.Gid = 0
+
+	var buf bytes.Buffer
+	writer := NewWriter(&buf)
+	writer.WriteGlobalHeaderForLongFiles([]string{"test_long_filename.txt"})
+	writer.WriteHeader(hdr)
+	_, err := writer.Write([]byte(body))
+	assert.NoError(t, err)
+
+	f, _ := os.Open("./fixtures/gnu_long_filename.a")
+	defer f.Close()
+
+	b, err := ioutil.ReadAll(f)
+	assert.NoError(t, err)
+
+	actual := buf.Bytes()
+	assert.Equal(t, b, actual)
+}
+
 func TestWriteBSDFilename(t *testing.T) {
 	hdr := &Header{}
 	body := "test a file with a long filename\n"
